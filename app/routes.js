@@ -35,21 +35,6 @@ export default function createRoutes(store) {
       },
     },
     {
-      path: '/group',
-      name: 'home',
-      getComponent(nextState, cb) {
-        const importModules = Promise.all([import('containers/GroupPage')]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
-      },
-    },
-    {
       path: '*',
       name: 'group',
       getComponent(loc, cb) {

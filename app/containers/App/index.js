@@ -14,7 +14,6 @@ export default class App extends Component {
         <div className="content">
           {this.props.children}
         </div>
-        <Nav />
       </div>
     );
   }

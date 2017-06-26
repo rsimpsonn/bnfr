@@ -8,7 +8,7 @@ export default class Nav extends Component {
     super(props);
 
     this.state = {
-      groups: ['Publications', 'Robotics', 'Football'],
+      groups: ['Publications', 'Robotics', 'Football', 'Struck'],
     };
   }
 
@@ -36,17 +36,19 @@ const Nodes = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
   align-content: space-between;
   align-items: center;
+  /position:fixed;
+  /bottom:0;
 `;
 
 const P = styled.button`
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
   background: #02A8F3;
-  margin: 10px;
+  margin: 10px 10px 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -63,7 +65,7 @@ const P = styled.button`
 `;
 
 const Text = styled.p`
-  font-size: 20px;
+  font-size: 15px;
   color: #fff;
   margin: 0;
   text-decoration: none;

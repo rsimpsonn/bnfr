@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+import Nav from '../Nav';
+
 const bonfire = require('../../../images/bonfire.svg');
 const profile = require('../../../images/profile.svg');
 
@@ -18,6 +20,7 @@ export default class Header extends Component {
   render() {
     return (
       <Bar>
+        <Nav />
         <Icon src={profile} alt="profi" />
       </Bar>
     );
@@ -37,6 +40,6 @@ const Bar = styled.div`
 const Icon = styled.img`
   height: 40px;
   width: auto;
-  margin: 5%;
+  margin: 3%;
   cursor: pointer;
 `;
