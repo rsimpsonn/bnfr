@@ -185,7 +185,7 @@ const { slug } = yield take(LOAD_POST);
 yield call(getXhrPodcast, slug);
 
 export function* getXhrPodcast(slug) {
-  const requestURL = `http://your.api.com/api/posts/${slug}`;
+  const requestURL = `http://52.66.73.127/bonfire/${slug}`;
   const post = yield call(request, requestURL);
   if (!post.err) {
     yield put(postLoaded(post));
@@ -195,7 +195,7 @@ export function* getXhrPodcast(slug) {
 }
 ```
 
-Wait (`take`) for the LOAD_POST constant, which contains the slug payload from the `getPost()` function in actions.js. 
+Wait (`take`) for the LOAD_POST constant, which contains the slug payload from the `getPost()` function in actions.js.
 
 When the action is fired then dispatch the `getXhrPodcast()` function to get the response from your api. On success dispatch the `postLoaded()` action (`yield put`) which sends back the response and can be added into the reducer state.
 

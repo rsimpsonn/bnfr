@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const Join = require('../../images/joinbutton.svg');
 const Joined = require('../../images/joined.svg');
@@ -33,6 +33,15 @@ export default class JoinButton extends Component {
   }
 }
 
+const Flip = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
 const JoinHere = styled.button`
   width: 70px;
   height: 25px;
@@ -53,6 +62,7 @@ const AlreadyJoined = styled.button`
   margin: 10px;
   border-radius: 50%;
   float: right;
+  animation: ${Flip} 0.75s ease-out;
 
   &:focus {
     outline: 0;

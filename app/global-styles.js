@@ -3,7 +3,7 @@ import { injectGlobal } from 'styled-components';
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
 
-  @import url('https://fonts.googleapis.com/css?family=Montserrat');
+  @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700');
 
   html,
   body {
@@ -28,6 +28,13 @@ injectGlobal`
   h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 30px;
+    color: #fff;
+  }
+
+  h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    font-weight: 300;
     color: #fff;
   }
 

@@ -34,7 +34,7 @@ const Card = styled.div`
   background: white;
   display: flex;
   flex-direction: column;
-  margin: 25px 0px 25px 40px;
+  margin: 25px 0px 25px 45px;
   border-radius: 15px;
   overflow: hidden;
   `;
@@ -55,4 +55,5 @@ const Under = styled.p`
   margin: 4px 6px 4px 8px;
   line-height: 15px;
   color: #BDBDBD;
+  font-weight: 300;
   `;

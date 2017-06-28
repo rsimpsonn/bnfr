@@ -12,10 +12,11 @@ const Fill = styled.section`
   background: linear-gradient( to right top, #89FFE4, #02A8F3);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
+  overflow-y: scroll;
+  overflow-x: hidden;
   position: relative;
-  min-height: 140px;
+  max-height: 284px;
   `;
 
 Hero.defaultProps = {
