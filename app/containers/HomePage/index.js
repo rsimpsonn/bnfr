@@ -14,6 +14,7 @@ export default class HomePage extends Component {
 
     this.state = {
       popoverOpen: false,
+      // users groups
     };
 
     this.toggle = this.toggle.bind(this);
@@ -27,7 +28,7 @@ export default class HomePage extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ overflow: 'hidden' }}>
         <Hero>
           <Rockets src={Space} alt="rockets" />
           <div>
@@ -45,8 +46,12 @@ export default class HomePage extends Component {
             <Announcement message="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus, nibh vel convallis feugiat, libero nunc egestas nulla, fermentum ultricies ipsum lacus et velit. Nam sagittis ex vel ante." />
           </Flex>
         </Hero>
-        <Groups>Active on Campus Now</Groups>
+        <Groups>
+          Active on Campus{' '}
+          <a href="/start"><Start> Start a group</Start></a>
+        </Groups>
         <Flex>
+          <GroupCard />
           <GroupCard />
           <GroupCard />
           <GroupCard />
@@ -124,4 +129,12 @@ const HeadingFormat = styled.div`
     display: flex;
     justify-content: flex-start;
     flex-flow: column wrap;
+  `;
+
+const Start = styled.p`
+  font-size: 18px;
+  font-weight: 300;
+  color: #BDBDBD;
+  margin: 0px 10px;
+  display: inline;
   `;

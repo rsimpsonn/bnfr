@@ -75,9 +75,10 @@ const Icon = styled.img`
 
 const Div = styled.div`
   background: #fff;
-  max-width: 180px;
+  max-width: 220px;
   border-radius: 15px;
   padding: 10px;
+  box-shadow: 0px 5px 26px #DCDCDC;
   animation: ${Fade} 0.15s linear;
-  margin: 35px 0px;
+  margin: 35px -30px;
 `;

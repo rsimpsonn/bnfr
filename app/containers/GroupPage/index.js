@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import styled, { keyframes } from 'styled-components';
-import Graph from '../../components/Graph';
+import { Scrollbars } from 'react-custom-scrollbars';
+
+import Event from '../../components/Event';
 import ChannelCard from '../../components/ChannelCard';
 
 const Icon = require('./cover.png');
@@ -24,9 +26,14 @@ export default class GroupPage extends Component {
             </CoverPadding>
             <Text>{this.props.members.substring(1)}</Text>
             <Members>Members</Members>
-            <Pad>
-              <Graph />
-            </Pad>
+            <Scrollbars
+              style={{ height: 60, scrollTop: 'scrollHeight' }}
+              autoHide
+            >
+              <Event />
+              <Event />
+              <Event />
+            </Scrollbars>
           </Flex>
           <ChannelPadding>
             <ChannelCard />
@@ -60,14 +67,14 @@ const Cover = styled.img`
 
 const Flex = styled.div`
   height: 100%;
-  width: 30%;
+  max-width: 30%;
   flex-direction: column;
   justify-content: center;
   display: flex;
   background: transparent;
   padding: 20px;
-  flex: 1;
   margin: 0 40px;
+  min-width: 20%;
 `;
 
 const Screen = styled.div`
@@ -105,6 +112,7 @@ const Members = styled.h1`
   text-align: center;
   font-weight: 400;
   margin-top: -6px;
+  margin-bottom: 20px;
 `;
 
 const ChannelPadding = styled.div`
@@ -112,8 +120,10 @@ const ChannelPadding = styled.div`
   `;
 
 const Pad = styled.div`
-    justify-content: center;
+    flex-direction: column;
     display: flex;
+    overflow-y: scroll;
+    max-height: 55px;
   `;
 
 GroupPage.propTypes = {

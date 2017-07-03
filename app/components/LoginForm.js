@@ -12,16 +12,27 @@ export default class LoginForm extends Component {
       password: 'bonfire',
     };
 
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleLogin(event) {
-    /* event.preventDefault();
+  handleChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
 
     window
       .http({
         method: 'post',
-        url: 'http://52.66.73.127/bonfire/bon-lara/public/api/login/',
+        url: 'bon-lara/public/api/login/',
         data: {
           username: this.state.username,
           password: this.state.password,
@@ -30,19 +41,33 @@ export default class LoginForm extends Component {
       .then((res) => {
         this.props.onLogin(res.data);
       })
-      .catch(() => {}); */
+      .catch(
+        (/* err */) => {
+          // TODO: handle this
+        }
+      );
   }
 
   render() {
     return (
       <Flex>
         <Fire src={Bon} alt="bonfire" />
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <p>Username</p>
-          <Input type="text" name="username" placeholder="Username" />
+          <Input
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={this.handleChange}
+          />
           <p>Password</p>
-          <Input type="text" name="password" placeholder="Password" />
-          <button onClick={this.handleLogin}>Submit</button>
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={this.handleChange}
+          />
+          <button type="submit">Submit</button>
         </form>
       </Flex>
     );

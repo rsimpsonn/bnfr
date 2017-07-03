@@ -19,9 +19,9 @@ export default class App extends Component {
     children: React.PropTypes.node,
   };
 
-  /* componentDidMount() {
+  componentDidMount() {
     console.info(
-      'Running application version 0.0.1',
+      '%c Running application version (1.0.0)',
       'background: #222; color: #57c7e8'
     );
     // Do things like:
@@ -50,7 +50,7 @@ export default class App extends Component {
       (response) => response,
       (error) => {
         // Show the login form if we get a 401 from backend
-        if (error.response.status === 401) {
+        if (error.response.status === 404) {
           this.setState({
             loggedIn: false,
           });
@@ -61,17 +61,13 @@ export default class App extends Component {
       }
     );
   }
-*/
+
   handleLogin(res) {
-    /*
     Cookies.set('token', res.token, { SameSite: 'strict' });
     window.http.defaults.headers.common.Authorization = `token ${res.token}`;
-    window.ecs.defaults.headers.common.Authorization = `token ${res.token}`;
-    */ this.setState(
-      {
-        loggedIn: true,
-      }
-    );
+    this.setState({
+      loggedIn: true,
+    });
   }
 
   render() {

@@ -62,6 +62,10 @@ const P = styled.button`
     outline: 0;
   }
 
+  &:active {
+    transform: scale(0.96);
+  }
+
 `;
 
 const Text = styled.p`

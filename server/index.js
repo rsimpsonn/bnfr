@@ -27,6 +27,7 @@ const host = customHost || null; // Let http.Server use its default IPv6/4 host
 const prettyHost = customHost || 'localhost';
 
 const port = argv.port || process.env.PORT || 3000;
+// const io = require('socket.io').listen(app);
 
 // Start your app.
 app.listen(port, host, (err) => {
@@ -47,3 +48,7 @@ app.listen(port, host, (err) => {
     logger.appStarted(port, prettyHost);
   }
 });
+
+/* io.sockets.on('connection', (socket) => {
+  console.log('a user connected');
+});*/

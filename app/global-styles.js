@@ -39,8 +39,22 @@ injectGlobal`
   }
 
   p,
-  label {
+  input {
     font-family: 'Montserrat', sans-serif;
     line-height: 1.5em;
+  }
+
+  textarea {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+  }
+
+  label {
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+  }
+
+  a {
+    text-decoration: none;
   }
 `;

@@ -13,16 +13,6 @@
 
   <script type="text/babel">
   const destination = document.querySelector('#container');
-
-ReactDOM.render(
-  <ReactRouter.Router history={ReactRouter.hashHistory}>
-    <ReactRouter.Route path="/" component={App}>
-      <ReactRouter.IndexRoute component={GroupPage} />
-      <ReactRouter.Route path="/groups" component={GroupPage} />
-    </ReactRouter.Route>
-  </ReactRouter.Router>,
-  destination
-);
 </script>
 
   <body background="white">

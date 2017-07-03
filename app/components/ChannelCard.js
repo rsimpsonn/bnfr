@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import styled, { keyframes } from 'styled-components';
 
+import ChannelMessenger from './ChannelMessenger';
+import ChannelFeed from './ChannelFeed';
+
 const Corner = require('../../images/corner.svg');
 
 export default class ChannelCard extends Component {
@@ -9,6 +12,7 @@ export default class ChannelCard extends Component {
 
     this.state = {
       channelSelection: false,
+      currentChannel: 'yearbook',
     };
 
     this.handleButtonChange = this.handleButtonChange.bind(this);
@@ -29,9 +33,10 @@ export default class ChannelCard extends Component {
               onClick={this.handleButtonChange}
             />
             <Tag>#</Tag>
-            <Title>yearbook</Title>
+            <Title>{this.state.currentChannel}</Title>
             <Pad>
-              <p>Hey</p>
+              <ChannelMessenger />
+              <ChannelFeed />
             </Pad>
           </Channels>}
         {this.state.channelSelection &&
@@ -43,8 +48,8 @@ export default class ChannelCard extends Component {
             />
             <Tag>#</Tag>
             <Title>yearbook</Title>
-            <h1>thebolt</h1>
-            <h1>web</h1>
+            <Channel>thebolt</Channel>
+            <Channel>web</Channel>
           </Channels>}
       </div>
     );
@@ -53,12 +58,12 @@ export default class ChannelCard extends Component {
 
 const fadeIn = keyframes`
   from {
-    border-color: #89FFE4;
+    border-color: #55DEEA;
     background: #fff;
   }
   to {
     border-color: transparent;
-    background: #4EF0CB;
+    background: #02A8F3;
   }
   `;
 
@@ -70,6 +75,7 @@ const DropdownButton = styled.img`
 const Channels = styled.div`
   min-height: 480px;
   max-height: 480px;
+  min-width: 600px;
   box-shadow: 0px 5px 26px #DCDCDC;
   background: white;
   width: 94%;
@@ -78,13 +84,15 @@ const Channels = styled.div`
   padding: 0;
   border-top: solid;
   border-width: 50px;
-  border-color: #89FFE4;
+  border-color: #55DEEA;
   transition: background 3s, border-color 2s;
+  position: relative;
+  z-index: 1;
 
   ${(props) => {
     if (props.kind === 'open') {
       return `
-        background: #4EF0CB;
+        background: #02A8F3;
         border-color: transparent;
         animation: ${fadeIn} 0.3s ease-out;
       `;
@@ -101,10 +109,17 @@ const Tag = styled.h1`
 const Title = styled.h1`
         margin-left: 65px;
         margin-top: -65px;
+        cursor: pointer;
         `;
 
 const Pad = styled.div`
   display: flex;
   justify-content: center;
   margin: 10px;
+  flex-direction: column;
   `;
+
+const Channel = styled.h1`
+    margin: 40px 65px;
+    cursor: pointer;
+    `;

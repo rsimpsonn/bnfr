@@ -35,7 +35,7 @@ export default class JoinButton extends Component {
 
 const Flip = keyframes`
   from {
-    transform: rotate(0deg);
+    transform: rotate(90deg);
   }
   to {
     transform: rotate(360deg);
