@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import styled from 'styled-components';
 
-const Fire = require('../../images/cover.png');
+const Fire = require('../../images/fire.svg');
 
 const Announcement = (props) =>
   <Banner>

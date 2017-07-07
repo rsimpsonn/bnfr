@@ -81,4 +81,5 @@ const Div = styled.div`
   box-shadow: 0px 5px 26px #DCDCDC;
   animation: ${Fade} 0.15s linear;
   margin: 35px -30px;
+  z-index: 100;
 `;

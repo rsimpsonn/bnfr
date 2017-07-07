@@ -38,6 +38,13 @@ injectGlobal`
     color: #fff;
   }
 
+  h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: #fff;
+  }
+
   p,
   input {
     font-family: 'Montserrat', sans-serif;

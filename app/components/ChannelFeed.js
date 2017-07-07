@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import ChannelMessage from './ChannelMessage';
+import ChannelMessenger from './ChannelMessenger';
 
 export default class ChannelFeed extends Component {
   constructor(props) {
@@ -17,19 +18,48 @@ export default class ChannelFeed extends Component {
         'Hey',
         'Hey',
       ],
+      message: '',
     };
+
+    this.addMessage = this.addMessage.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  addMessage() {
+    const messagesCopy = this.state.messages;
+    messagesCopy.push(this.state.message);
+    this.setState({
+      messages: messagesCopy,
+      message: '',
+    });
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.value;
+
+    this.setState({
+      message: value,
+    });
   }
 
   render() {
     const feed = this.state.messages.map((msg) =>
-      <div>
-        <ChannelMessage message={msg} />
-      </div>
+      <ChannelMessage message={msg} />
     );
+
     return (
-      <Scrollbars style={{ height: 350 }}>
-        {feed}
-      </Scrollbars>
+      <div>
+        <Scrollbars style={{ height: 355 }}>
+          {feed}
+        </Scrollbars>
+        <ChannelMessenger change={this.handleChange} submit={this.addMessage} />
+      </div>
     );
   }
 }
+
+const Div = styled.div`
+  overflow-y: scroll;
+  height: 355px;
+  `;

@@ -1,35 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styled from 'styled-components';
+
+const But = require('../../images/send.svg');
 
 export default class ChannelMessenger extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      sent: false,
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.send = this.send.bind(this);
   }
-
-  handleChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  send() {
-    this.setState({
-      sent: true,
-      message: '',
-    });
-  }
-
   render() {
     return (
       <MessageBox>
@@ -37,9 +14,10 @@ export default class ChannelMessenger extends Component {
           name="message"
           type="submit"
           placeholder="Anything to say?"
-          onSubmit={this.send}
-          onChange={this.handleChange}
+          onChange={this.props.change}
+          onSubmit={this.props.submit}
         />
+        <Send src={But} alt="send" onClick={this.props.submit} />
       </MessageBox>
     );
   }
@@ -47,7 +25,7 @@ export default class ChannelMessenger extends Component {
 
 const MessageBox = styled.div`
   border-radius: 8px;
-  height: 34px;
+  height: 36px;
   width: 95%;
   border: solid 2px #F2F2F2;
   background-color: transprent;
@@ -61,9 +39,23 @@ const MessageBox = styled.div`
 const Message = styled.textarea`
   width: 100%;
   resize: none;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 300;
 
   &:focus {
     outline: 0;
   }
   `;
+
+const Send = styled.img`
+  float: right;
+  cursor: pointer;
+  &:active {
+    transform: scale(0.96);
+  }
+  `;
+
+ChannelMessenger.propTypes = {
+  submit: PropTypes.func.isRequired,
+  change: PropTypes.func.isRequired,
+};

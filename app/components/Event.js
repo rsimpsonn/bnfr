@@ -20,7 +20,7 @@ const Desc = styled.p`
   `;
 
 const Pad = styled.div`
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   `;
 
 export default Event;

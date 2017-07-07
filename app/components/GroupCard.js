@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import JoinButton from './JoinButton';
 
-const cover = require('../../images/cover.png');
+const cover = require('../../images/cover.jpg');
 
 export default class GroupCard extends Component {
   constructor(props) {

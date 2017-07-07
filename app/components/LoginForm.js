@@ -20,6 +20,7 @@ export default class LoginForm extends Component {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
+    console.log(name);
 
     this.setState({
       [name]: value,
@@ -31,8 +32,10 @@ export default class LoginForm extends Component {
 
     window
       .http({
-        method: 'post',
-        url: 'bon-lara/public/api/login/',
+        type: 'POST',
+        url: 'bon-lara/public/api/login',
+        dataType: 'JSON',
+        contentType: 'application/json; charset=utf-8',
         data: {
           username: this.state.username,
           password: this.state.password,

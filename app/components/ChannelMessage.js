@@ -4,8 +4,8 @@ import styled from 'styled-components';
 const ChannelMessage = (props) =>
   <Box>
     <Profile />
-    <Message><strong>Ryan Simpson</strong><small>8:29 PM</small></Message>
-    <Message>{props.message}</Message>
+    <Message><b>Ryan Simpson</b><small>8:29 PM</small></Message>
+    <M>{props.message}</M>
   </Box>;
 
 const Message = styled.p`
@@ -14,17 +14,24 @@ const Message = styled.p`
   float: right;
   width: 94%;
 
-  >strong {
+  >b {
     font-size: 14px;
   }
 
   >small {
     display: inline;
-    color: #DCDCDC;
+    color: #ADADAD;
     margin: 0 0 0 10px;
     font-size: 12px;
-    font-weight: 300;
   }
+  `;
+
+const M = styled.p`
+font-size: 14px;
+margin: -10px 0 0;
+float: right;
+width: 94%;
+font-weight: 300;
   `;
 
 const Profile = styled.img`

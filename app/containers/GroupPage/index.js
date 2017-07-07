@@ -4,41 +4,58 @@ import { Scrollbars } from 'react-custom-scrollbars';
 
 import Event from '../../components/Event';
 import ChannelCard from '../../components/ChannelCard';
+import LeadersPanel from '../../components/LeadersPanel';
+import BotSettings from '../BotSettings';
 
-const Icon = require('./cover.png');
+const Icon = require('../../../images/cover.jpg');
 
 export default class GroupPage extends Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      leading: true,
+      botOpen: false,
+    };
+
+    this.toggle = this.toggle.bind(this);
   }
 
-  handleChange() {}
+  toggle() {
+    this.setState({
+      botOpen: !this.state.botOpen,
+    });
+  }
 
   render() {
     return (
-      <div background="white">
-        <Screen>
-          <Flex>
-            <CoverPadding>
-              <Cover src={Icon} alt="b" />
-            </CoverPadding>
-            <Text>{this.props.members.substring(1)}</Text>
-            <Members>Members</Members>
-            <Scrollbars
-              style={{ height: 60, scrollTop: 'scrollHeight' }}
-              autoHide
-            >
-              <Event />
-              <Event />
-              <Event />
-            </Scrollbars>
-          </Flex>
-          <ChannelPadding>
-            <ChannelCard />
-          </ChannelPadding>
-        </Screen>
+      <div>
+        {this.state.botOpen === false &&
+          <Screen>
+            <Flex>
+              <CoverPadding>
+                <Cover src={Icon} alt="b" />
+              </CoverPadding>
+              <Text>50</Text>
+              <Members>Members</Members>
+              <Scrollbars
+                style={{ height: 60, scrollTop: 'scrollHeight' }}
+                autoHide
+              >
+                <Event />
+                <Event />
+                <Event />
+              </Scrollbars>
+            </Flex>
+            <ChannelPadding>
+              <ChannelCard />
+            </ChannelPadding>
+          </Screen>}
+        {this.state.botOpen === true &&
+          <BotSettings group={this.props.members.substring(1)} />}
+        <Pad>
+          <LeadersPanel bot={this.toggle} />
+        </Pad>
       </div>
     );
   }
@@ -58,11 +75,11 @@ to {
 
 const Cover = styled.img`
   transition: transform 0.8s;
-  border-radius: 4px;
+  border-radius: 8px;
   width: 240px;
   height: auto;
   position: absolute;
-  animation: ${hover} 3s ease-in-out infinite;
+  animation: ${hover} 3s ease-in-out 3;
   `;
 
 const Flex = styled.div`
@@ -72,7 +89,7 @@ const Flex = styled.div`
   justify-content: center;
   display: flex;
   background: transparent;
-  padding: 20px;
+  padding: 0 20px 20px;
   margin: 0 40px;
   min-width: 20%;
 `;
@@ -120,10 +137,10 @@ const ChannelPadding = styled.div`
   `;
 
 const Pad = styled.div`
-    flex-direction: column;
+    flex-direction: row;
     display: flex;
-    overflow-y: scroll;
-    max-height: 55px;
+    justify-content: center;
+    padding: 20px;
   `;
 
 GroupPage.propTypes = {
