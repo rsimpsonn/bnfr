@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-export default class TodoCard extends Component {
+export default class NewsCard extends Component {
   constructor(props) {
     super(props);
 
@@ -13,7 +13,7 @@ export default class TodoCard extends Component {
   render() {
     return (
       <Card>
-        <p>Add a todo </p>
+        <Title>Click to send in your channels </Title>
       </Card>
     );
   }
@@ -23,8 +23,20 @@ const Card = styled.div`
   background: white;
   display: flex;
   flex-direction: column;
-  margin: 25px 0px 25px 45px;
   border-radius: 15px;
   overflow: hidden;
-  padding: 15px 35px;
+  padding: 20px;
+  max-height: 80%;
+  overflow-y: scroll;
 `;
+
+const Title = styled.h3`
+  margin: 0px 5px;
+  text-align: left;
+  font-size: 28px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 300;
+  color: #212121;
+  `;

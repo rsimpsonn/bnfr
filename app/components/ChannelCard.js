@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import ChannelMessenger from './ChannelMessenger';
 import ChannelFeed from './ChannelFeed';
 
 const Corner = require('../../images/corner.svg');

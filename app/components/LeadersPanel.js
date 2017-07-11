@@ -4,6 +4,7 @@ import { Popover, PopoverContent } from 'reactstrap';
 
 import EventForm from './EventForm';
 import MessageForm from './MessageForm';
+import GroupSettingsForm from './GroupSettingsForm';
 
 const Rob = require('../../images/robot.svg');
 const Speak = require('../../images/speaker.svg');
@@ -17,10 +18,12 @@ export default class LeadersPanel extends Component {
     this.state = {
       eventPopover: false,
       messagePopover: false,
+      settingsPopover: false,
     };
 
     this.toggleEvent = this.toggleEvent.bind(this);
     this.toggleMessage = this.toggleMessage.bind(this);
+    this.toggleSettings = this.toggleSettings.bind(this);
   }
 
   toggleEvent() {
@@ -32,6 +35,12 @@ export default class LeadersPanel extends Component {
   toggleMessage() {
     this.setState({
       messagePopover: !this.state.messagePopover,
+    });
+  }
+
+  toggleSettings() {
+    this.setState({
+      settingsPopover: !this.state.settingsPopover,
     });
   }
 
@@ -57,7 +66,9 @@ export default class LeadersPanel extends Component {
           <Text>Add Message</Text>
         </Flex>
         <Flex>
-          <Button><img src={Pin} alt="announce" /></Button>
+          <Button onClick={this.toggleSettings} id="settings">
+            <img src={Pin} alt="announce" />
+          </Button>
           <Text>Settings</Text>
         </Flex>
         <Popover
@@ -81,6 +92,18 @@ export default class LeadersPanel extends Component {
           <PopoverContent>
             <Div>
               <MessageForm />
+            </Div>
+          </PopoverContent>
+        </Popover>
+        <Popover
+          placement="top"
+          isOpen={this.state.settingsPopover}
+          target="settings"
+          toggle={this.toggleSettings}
+        >
+          <PopoverContent>
+            <Div>
+              <GroupSettingsForm />
             </Div>
           </PopoverContent>
         </Popover>
@@ -155,7 +178,7 @@ const FlexHelp = styled.div`
 
 const Div = styled.div`
       background: #fff;
-      max-width: 220px;
+      max-width: 240px;
       border-radius: 15px;
       padding: 10px;
       box-shadow: 0px 5px 26px #DCDCDC;

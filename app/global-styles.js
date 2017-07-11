@@ -45,6 +45,7 @@ injectGlobal`
     color: #fff;
   }
 
+  button,
   p,
   input {
     font-family: 'Montserrat', sans-serif;

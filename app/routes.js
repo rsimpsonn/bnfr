@@ -50,21 +50,6 @@ export default function createRoutes(store) {
       },
     },
     {
-      path: '/bot',
-      name: 'start',
-      getComponent(nextState, cb) {
-        const importModules = Promise.all([import('containers/BotSettings')]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([component]) => {
-          renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
-      },
-    },
-    {
       path: '*',
       name: 'group',
       getComponent(loc, cb) {

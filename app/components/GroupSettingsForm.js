@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const MessageForm = (props) =>
+const GroupSettingsForm = (props) =>
   <div>
-    <Title>Add a message</Title>
-    <Desc placeholder="Message" />
+    <Title>Your Group</Title>
+    <Input placeholder="Name" />
+    <Desc placeholder="Description" />
     <Submit><SubmitText>Submit</SubmitText></Submit>
   </div>;
 
@@ -55,4 +56,15 @@ const SubmitText = styled.p`
     font-size: 12px;
     `;
 
-export default MessageForm;
+const Input = styled.input`
+      border-radius: 8px;
+      padding: 8px;
+      border: solid #F2F2F2 2px;
+      margin: 5px;
+
+      &:focus {
+        outline: 0;
+      }
+      `;
+
+export default GroupSettingsForm;
