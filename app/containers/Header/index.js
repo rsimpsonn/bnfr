@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Popover, PopoverContent } from 'reactstrap';
 
@@ -38,7 +38,7 @@ export default class Header extends Component {
         >
           <PopoverContent>
             <Div>
-              <Profile />
+              <Profile logout={this.props.logout} />
             </Div>
           </PopoverContent>
         </Popover>
@@ -76,6 +76,8 @@ const Icon = styled.img`
 const Div = styled.div`
   background: #fff;
   max-width: 220px;
+  min-width: 180px;
+  min-height: 220px;
   border-radius: 15px;
   padding: 10px;
   box-shadow: 0px 5px 26px #DCDCDC;
@@ -83,3 +85,7 @@ const Div = styled.div`
   margin: 35px -30px;
   z-index: 100;
 `;
+
+Header.propTypes = {
+  logout: PropTypes.func.isRequired,
+};

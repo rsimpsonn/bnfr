@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
+import EmojiConverter from 'emoji-js';
+import $ from 'jquery';
+
+import GroupEmojis, { replaceAll } from '../../GroupEmojis';
+
+const emoji = new EmojiConverter();
+emoji.addAliases(GroupEmojis());
 
 const home = require('../../../images/home.svg');
 
@@ -7,25 +15,90 @@ export default class Nav extends Component {
   constructor(props) {
     super(props);
 
+    this.getUserGroups = this.getUserGroups.bind(this);
+    this.isMember = this.isMember.bind(this);
+    this.nodes = this.nodes.bind(this);
+
     this.state = {
-      groups: ['Publications', 'Robotics', 'Football', 'Struck'],
+      groups: this.getUserGroups(),
+      user: JSON.parse(Cookies.get('token')),
     };
   }
 
-  render() {
-    const nodes = this.state.groups.map((group) =>
-      <A href={`/${group}`.toLowerCase()}>
-        <P key={group.toString()}>
-          <Text>{group.substring(0, 1)}</Text>
-        </P>
-      </A>
+  getUserGroups() {
+    const userGroups = [];
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/groups',
+      method: 'GET',
+      dataType: 'JSON',
+      headers: {
+        Authorization: `Bearer ${JSON.parse(Cookies.get('token')).userToken}`,
+      },
+    }).then((data) => {
+      const groups = data[0].data;
+      for (let i = 0; i < groups.length; i++) {
+        if (
+          groups[i].groupCreator.userId ===
+          JSON.parse(Cookies.get('token')).userId
+        ) {
+          userGroups.push(groups[i]);
+        } else if (this.isMember(groups[i].group_members)) {
+          userGroups.push(groups[i]);
+        }
+      }
+      this.setState({
+        groups: userGroups,
+      });
+    });
+  }
+
+  isMember(members) {
+    if (members === undefined) {
+      return false;
+    }
+    for (let i = 0; i < members.length; i++) {
+      if (members[i].userId === this.state.user.userId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  nodes() {
+    return this.state.groups.map((group) =>
+      <div>
+        <A
+          href={`/${group.groupId}`.toLowerCase()}
+          key={group.groupName.toString()}
+        >
+          <P groupName={group.groupName} key={group.groupName.toString()}>
+            <Text>
+              {group.groupName.substring(0, 1)}
+            </Text>
+            <SurfaceArea>
+              <Emoji>
+                {emoji.replace_colons(
+                  `:${replaceAll(group.groupName.toLowerCase())}:`
+                ).length === 2
+                  ? emoji.replace_colons(
+                      `:${replaceAll(group.groupName.toLowerCase())}:`
+                    )
+                  : group.groupName.substring(0, 1)}
+              </Emoji>
+            </SurfaceArea>
+          </P>
+        </A>
+      </div>
     );
+  }
+
+  render() {
     return (
       <Nodes>
         <a href="/">
           <Home src={home} alt="Home" />
         </a>
-        {nodes}
+        {this.state.groups && this.nodes()}
       </Nodes>
     );
   }
@@ -33,14 +106,11 @@ export default class Nav extends Component {
 
 const Nodes = styled.div`
   height: 80px;
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-content: space-between;
   align-items: center;
-  /position:fixed;
-  /bottom:0;
 `;
 
 const P = styled.button`
@@ -53,23 +123,24 @@ const P = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &:hover {
-    background: #FFC2FB;
-  }
+  z-index: 1;
+  position: relative;
 
   &:focus {
     outline: 0;
   }
 
+  &:hover {
+    background: transparent;
+  }
+
   &:active {
     transform: scale(0.96);
   }
-
 `;
 
 const Text = styled.p`
-  font-size: 15px;
+  font-size: 20px;
   color: #fff;
   margin: 0;
   text-decoration: none;
@@ -82,4 +153,29 @@ const A = styled.a`
 const Home = styled.img`
   margin: 10px;
   cursor: pointer;
+  `;
+
+const Emoji = styled.p`
+  font-size: 30px;
+  font-weight: 700;
+  color: #02A8F3;
+  top: 0;
+  margin: 0;
+  position: absolute;
+  transform: translateY(-2px);
+`;
+
+const SurfaceArea = styled.div`
+  position: absolute;
+  opacity: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 1;
+  }
   `;

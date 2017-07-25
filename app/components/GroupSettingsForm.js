@@ -1,13 +1,82 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import $ from 'jquery';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
-const GroupSettingsForm = (props) =>
-  <div>
-    <Title>Your Group</Title>
-    <Input placeholder="Name" />
-    <Desc placeholder="Description" />
-    <Submit><SubmitText>Submit</SubmitText></Submit>
-  </div>;
+const channeladd = require('../../images/channeladd.svg');
+
+export default class GroupSettingsForm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: JSON.parse(Cookies.get('token')),
+      open: false,
+    };
+
+    this.addChannel = this.addChannel.bind(this);
+    this.toggleOpen = this.toggleOpen.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
+  addChannel() {
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/create-new-channel',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
+        name: this.state.channelName,
+        user_id: this.state.user.userId,
+        group_id: this.props.group.groupId,
+        campus_id: 1,
+      },
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => console.log(data));
+  }
+
+  toggleOpen() {
+    this.setState({
+      open: !this.state.open,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <Title>Your Group</Title>
+        <Input placeholder="Name" />
+        <Desc placeholder="Description" />
+        <Title>Channels</Title>
+        <Flex>
+          <Channel># bro</Channel>
+          {!this.state.open && <ChannelAdd onClick={this.toggleOpen} />}
+          {this.state.open &&
+            <Row>
+              <ChannelInput
+                name="channelName"
+                placeholder="New Channel"
+                onChange={this.handleChange}
+              />
+              <ChannelAdd onClick={this.addChannel} />
+            </Row>}
+        </Flex>
+        <Submit><SubmitText>Submit</SubmitText></Submit>
+      </div>
+    );
+  }
+}
 
 const Title = styled.h3`
     margin: 0px 5px 5px;
@@ -67,4 +136,58 @@ const Input = styled.input`
       }
       `;
 
-export default GroupSettingsForm;
+const Channel = styled.button`
+  background: #02A8F3;
+  border-radius: 14px;
+  padding: 5px 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+`;
+
+const ChannelAdd = styled.button`
+  width: 30px;
+  height: 30px;
+  background: transparent url(${channeladd}) center no-repeat;
+  margin: 5px 0;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:active {
+    transform: scale(0.96);
+
+  }
+`;
+
+const ChannelInput = styled.input`
+  background: #02A8F3;
+  border-radius: 14px;
+  padding: 5px 10px;
+  width: 170px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 5px 10px 0 0;
+
+  &:focus {
+    outline: 0;
+  }
+`;
+
+const Flex = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+GroupSettingsForm.propTypes = {
+  group: PropTypes.object.isRequired,
+};

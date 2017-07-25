@@ -6,7 +6,15 @@ const But = require('../../images/send.svg');
 export default class ChannelMessenger extends Component {
   constructor(props) {
     super(props);
+
+    this.submit = this.submit.bind(this);
   }
+
+  submit() {
+    this.props.submit();
+    this.input.value = '';
+  }
+
   render() {
     return (
       <MessageBox>
@@ -14,10 +22,11 @@ export default class ChannelMessenger extends Component {
           name="message"
           type="submit"
           placeholder="Anything to say?"
+          ref={(c) => (this.input = c)}
           onChange={this.props.change}
-          onSubmit={this.props.submit}
+          onSubmit={this.submit}
         />
-        <Send src={But} alt="send" onClick={this.props.submit} />
+        <Send src={But} alt="send" onClick={this.submit} />
       </MessageBox>
     );
   }

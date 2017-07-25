@@ -8,7 +8,7 @@ const Hero = (props) =>
 
 const Fill = styled.section`
   width: 105%;
-  background: linear-gradient( to right top, #89FFE4, #02A8F3);
+  background: linear-gradient( to right top, #C2FCFF, #02A8F3); /* #89FFE4 #31C6EE*/ 
   display: flex;
   flex-direction: column;
   padding: 20px;

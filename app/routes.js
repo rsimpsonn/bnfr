@@ -35,6 +35,21 @@ export default function createRoutes(store) {
       },
     },
     {
+      path: '/interests',
+      name: 'home',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([import('components/Interests')]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([component]) => {
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    },
+    {
       path: '/start',
       name: 'start',
       getComponent(nextState, cb) {
@@ -53,7 +68,7 @@ export default function createRoutes(store) {
       path: '*',
       name: 'group',
       getComponent(loc, cb) {
-        cb(null, (props) => <GroupPage {...props} members={location.pathname} />);
+        cb(null, (props) => <GroupPage {...props} id={location.pathname} />);
       },
     },
   ];

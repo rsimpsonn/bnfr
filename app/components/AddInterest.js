@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styled, { keyframes } from 'styled-components';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 
 import Button from '../../images/addinterest.svg';
 
@@ -9,9 +11,11 @@ export default class AddInterest extends Component {
 
     this.state = {
       open: false,
+      user: JSON.parse(Cookies.get('token')),
     };
 
     this.toggle = this.toggle.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   toggle() {
@@ -20,12 +24,35 @@ export default class AddInterest extends Component {
     });
   }
 
+  submit() {
+    $.ajax({
+      url:
+        'http://52.66.73.127/bonfire/bon-lara/public/api/user-interest/add-interest',
+      method: 'POST',
+      dataType: 'JSON',
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+      data: {
+        interest_id: 1,
+      },
+    }).then((data) => console.log(data));
+
+    this.props.refresh();
+  }
+
   render() {
     return (
       <div>
         {this.state.open === false &&
           <CircleButton onClick={this.toggle} src={Button} alt="add" />}
-        {this.state.open && <Bub>#<Interest placeholder="new interest" /></Bub>}
+        {this.state.open &&
+          <div>
+            <Bub>
+              #<Interest placeholder="new interest" />
+            </Bub>
+            <button onClick={this.submit}>sub</button>{' '}
+          </div>}
       </div>
     );
   }
@@ -77,3 +104,7 @@ const Interest = styled.input`
     outline: 0;
   }
   `;
+
+AddInterest.propTypes = {
+  refresh: PropTypes.func.isRequired,
+};

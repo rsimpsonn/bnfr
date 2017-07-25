@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import styled from 'styled-components';
 
 import CalendarIcon from './CalendarIcon';
 
+function parseTime(date) {
+  const time = date.substring(11);
+  let AMorPM = '';
+  let UStime = '';
+  if (Number(time.substring(0, 2)) > 11) {
+    AMorPM = 'PM';
+  } else {
+    AMorPM = 'AM';
+  }
+  if (Number(time.substring(0, 2)) > 12) {
+    UStime = Number(time.substring(0, 2) % 12);
+  }
+  return `${UStime}:${time.substring(3, 5)} ${AMorPM}`;
+}
+
 const Event = (props) =>
   <Pad>
-    <CalendarIcon />
-    <Desc>3 PM<red>Meeting today! Bring your shit! We ballin!</red></Desc>
+    <CalendarIcon date={props.date} />
+    <Desc>{parseTime(props.date)}<red>{props.description}</red></Desc>
   </Pad>;
 
 const Desc = styled.p`
@@ -20,7 +35,10 @@ const Desc = styled.p`
   `;
 
 const Pad = styled.div`
-  margin: 0 0 10px;
+  margin: 0 0 25px;
   `;
-
+Event.propTypes = {
+  date: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+};
 export default Event;

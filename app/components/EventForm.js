@@ -1,15 +1,70 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import $ from 'jquery';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
-const EventForm = (props) =>
-  <div>
-    <Title>Add an event</Title>
-    <Input placeholder="Name" />
-    <Input placeholder="Date" type="date" />
-    <Input type="time" />
-    <Desc placeholder="Description" />
-    <Submit><SubmitText>Submit</SubmitText></Submit>
-  </div>;
+export default class EventForm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: JSON.parse(Cookies.get('token')),
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.submit = this.submit.bind(this);
+  }
+
+  submit() {
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/events/create',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
+        name: this.state.name,
+        title: this.state.title,
+        start_date: this.state.eventDate + this.state.time,
+        end_date: this.state.eventDate + this.state.time,
+        group_id: this.props.group.groupId,
+      },
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => console.log(data));
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <Title>Add an event</Title>
+        <Input placeholder="Name" name="name" onChange={this.handleChange} />
+        <Input
+          placeholder="Date"
+          type="date"
+          name="eventDate"
+          onChange={this.handleChange}
+        />
+        <Input type="time" name="time" onChange={this.handleChange} />
+        <Desc
+          placeholder="Description"
+          name="title"
+          onChange={this.handleChange}
+        />
+        <Submit onClick={this.submit}><SubmitText>Submit</SubmitText></Submit>
+      </div>
+    );
+  }
+}
 
 const Input = styled.input`
   border-radius: 8px;
@@ -68,4 +123,6 @@ const SubmitText = styled.p`
       font-size: 12px;
       `;
 
-export default EventForm;
+EventForm.propTypes = {
+  group: PropTypes.object.isRequired,
+};

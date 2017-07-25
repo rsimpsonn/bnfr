@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 
 const Bon = require('../../images/bonfire.svg');
 
@@ -11,6 +12,7 @@ export default class LoginForm extends Component {
     this.state = {
       username: undefined,
       password: undefined,
+      onLogin: this.props.onLogin,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -30,17 +32,18 @@ export default class LoginForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    axios
-      .post('http://52.66.73.127/bonfire/bon-lara/public/api/login', {
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/login',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
         username: this.state.username,
         password: this.state.password,
-      })
-      .then((res, err) => {
-        if (!err) {
-          this.props.onLogin(res.data);
-        }
-      })
-      .catch((err) => {});
+      },
+    }).then((data) => {
+      Cookies.set('token', data);
+      this.props.onLogin();
+    });
   }
 
   render() {
@@ -62,10 +65,10 @@ export default class LoginForm extends Component {
                 placeholder="Password"
                 onChange={this.handleChange}
               />
-              <Login type="submit" onClick={this.props.login}>Login</Login>
+              <Login type="submit">Login</Login>
             </Flex>
           </form>
-          <Login onClick={this.props.signUp} style={{ margin: 0 }}>
+          <Login style={{ margin: 0 }} onClick={this.props.signUp}>
             <p>
               <small style={{ color: '#DCDCDC' }}>
                 Or Sign Up
@@ -117,6 +120,5 @@ const Fire = styled.img`
 
 LoginForm.propTypes = {
   onLogin: PropTypes.func.isRequired,
-  login: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
 };

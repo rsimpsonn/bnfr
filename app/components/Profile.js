@@ -1,65 +1,66 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
+import $ from 'jquery';
 
 import Interest from './Interest';
 import AddInterest from './AddInterest';
+import LogOut from './LogOut';
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      user: JSON.parse(Cookies.get('token')),
+    };
+
+    this.interests = this.interests.bind(this);
+  }
+
+  componentDidMount() {
+    $.ajax({
+      url: `http://52.66.73.127/bonfire/bon-lara/public/api/user-profile-with-interest/${this
+        .state.user.userId}`,
+      method: 'GET',
+      dataType: 'JSON',
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => this.setState({ user: data[0] }));
+  }
+
+  interests() {
+    return this.state.user.data.interests.map((interest) =>
+      <Interest interest={interest.name.toLowerCase()} />
+    );
   }
 
   render() {
     return (
       <div>
-        <Flex>
-          <Pic />
-          <Title><strong>Ryan Simpson</strong></Title>
-        </Flex>
-        <Title>Interests</Title>
-        <InterestFlex>
-          <Interest interest="coding" />
-          <Interest interest="art" />
-          <Interest interest="lacrosse" />
-        </InterestFlex>
-        <AddInterest />
-        <Logout><LogoutText>Log Out</LogoutText></Logout>
+        {this.state.user.data &&
+          <div>
+            <Flex>
+              <Title><strong>{this.state.user.data.name}</strong></Title>
+            </Flex>
+            <Title>Interests</Title>
+            <InterestFlex>
+              {this.state.user && this.interests()}
+            </InterestFlex>
+            <AddInterest />
+            <LogOut log={this.props.logout} />
+          </div>}
       </div>
     );
   }
 }
 
-const Pic = styled.img`
+const ProfilePic = styled.img`
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  background: #DCDCDC;
-  margin: 10px;
-`;
-
-const Logout = styled.button`
-margin: 20px 0px 0px;
-border-radius: 14px;
-display: flex;
-justify-content: center;
-align-items: center;
-background: #FF8E8E;
-padding: 11px 14px 10px 14px;
-
-&:focus {
-  outline: 0;
-}
-
-&:active {
-  transform: scale(0.96);
-}
-  `;
-
-const LogoutText = styled.p`
-margin: -6px 0px;
-font-size: 12px;
-font-weight: 400;
-color: #7B2020;
+  margin: 0 0 10px;
 `;
 
 const Title = styled.p`
@@ -84,3 +85,7 @@ const Flex = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+Profile.propTypes = {
+  logout: PropTypes.func.isRequired,
+};

@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Scrollbars } from 'react-custom-scrollbars';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
+import * as Vibrant from 'node-vibrant';
 
-import Event from '../../components/Event';
+import GroupEvents from '../../components/GroupEvents';
 import ChannelCard from '../../components/ChannelCard';
 import LeadersPanel from '../../components/LeadersPanel';
 import BotSettings from '../BotSettings';
 
-const Icon = require('../../../images/cover.jpg');
+import Image from '../../../images/lacrosse.jpg';
 
 export default class GroupPage extends Component {
   constructor(props) {
@@ -16,9 +19,14 @@ export default class GroupPage extends Component {
     this.state = {
       leading: true,
       botOpen: false,
+      user: JSON.parse(Cookies.get('token')),
     };
 
     this.toggle = this.toggle.bind(this);
+    this.memberCount = this.memberCount.bind(this);
+    this.findGroupById = this.findGroupById.bind(this);
+    this.isLeader = this.isLeader.bind(this);
+    this.getColors = this.getColors.bind(this);
   }
 
   toggle() {
@@ -27,35 +35,88 @@ export default class GroupPage extends Component {
     });
   }
 
+  memberCount() {
+    if (this.state.group.group_members === undefined) {
+      return 1;
+    }
+    const membercount = this.state.group.group_members.length + 1;
+    return membercount;
+  }
+
+  findGroupById(id) {
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/groups',
+      method: 'GET',
+      dataType: 'JSON',
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => {
+      const groups = data[0].data;
+      for (let i = 0; i < groups.length; i++) {
+        if (groups[i].groupId === id) {
+          this.setState({
+            group: groups[i],
+          });
+        }
+      }
+    });
+  }
+
+  isLeader() {
+    if (this.state.group.group_members === undefined) {
+      return true;
+    }
+
+    for (let i = 0; i < this.state.group.group_members.length; i++) {
+      if (this.state.group.group_members[i].userId === this.state.user.userId) {
+        if (this.state.group.group_members[i].isLeader === 1) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  getColors() {
+    const vibrant = new Vibrant(Image);
+    let rgb = [];
+    const swatches = vibrant.getPalette((err, palette) => {
+      rgb = palette.Vibrant.getHex();
+      console.log(rgb);
+    });
+  }
+
   render() {
+    this.findGroupById(Number(this.props.id.substring(1)));
     return (
       <div>
-        {this.state.botOpen === false &&
-          <Screen>
-            <Flex>
-              <CoverPadding>
-                <Cover src={Icon} alt="b" />
-              </CoverPadding>
-              <Text>50</Text>
-              <Members>Members</Members>
-              <Scrollbars
-                style={{ height: 60, scrollTop: 'scrollHeight' }}
-                autoHide
-              >
-                <Event />
-                <Event />
-                <Event />
-              </Scrollbars>
-            </Flex>
-            <ChannelPadding>
-              <ChannelCard />
-            </ChannelPadding>
-          </Screen>}
-        {this.state.botOpen === true &&
-          <BotSettings group={this.props.members.substring(1)} />}
-        <Pad>
-          <LeadersPanel bot={this.toggle} />
-        </Pad>
+        {this.state.group &&
+          <div>
+            {this.state.botOpen === false &&
+              <Screen>
+                <Flex color={this.getColors()}>
+                  <CoverPadding>
+                    <Cover src={this.state.group.groupImage} alt="b" />
+                  </CoverPadding>
+                  <MainText>{this.state.group.groupName}</MainText>
+                  <Text>{this.memberCount()}</Text>
+                  <Members>Members</Members>
+                  <GroupEvents
+                    id={this.state.group.groupId}
+                    creatorId={this.state.group.groupCreator.userId}
+                  />
+                </Flex>
+                <ChannelPadding>
+                  <ChannelCard groupId={this.state.group.groupId} />
+                </ChannelPadding>
+              </Screen>}
+            {this.state.botOpen === true &&
+              <BotSettings group={this.state.group.groupName} />}
+            <Pad>
+              <LeadersPanel group={this.state.group} bot={this.toggle} />
+            </Pad>
+          </div>}
       </div>
     );
   }
@@ -76,7 +137,7 @@ to {
 const Cover = styled.img`
   transition: transform 0.8s;
   border-radius: 8px;
-  width: 240px;
+  width: 150px;
   height: auto;
   position: absolute;
   animation: ${hover} 3s ease-in-out 3;
@@ -84,20 +145,20 @@ const Cover = styled.img`
 
 const Flex = styled.div`
   height: 100%;
-  max-width: 30%;
+  width: 30%;
   flex-direction: column;
   justify-content: center;
   display: flex;
-  background: transparent;
   padding: 0 20px 20px;
   margin: 0 40px;
-  min-width: 20%;
+
+  ${(props) => `
+      background: #84b44c`}
 `;
 
 const Screen = styled.div`
     display: flex;
     flex-direction: row;
-    background: transparent;
     `;
 
 const CoverPadding = styled.div`
@@ -143,6 +204,10 @@ const Pad = styled.div`
     padding: 20px;
   `;
 
+const MainText = styled.h2`
+  margin: 5px 0;
+`;
+
 GroupPage.propTypes = {
-  members: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 };

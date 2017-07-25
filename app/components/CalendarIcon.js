@@ -1,7 +1,47 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import styled from 'styled-components';
 
-const CalendarIcon = (props) => <Icon><Month>JAN</Month><Day>13</Day></Icon>;
+function parseMonth(date) {
+  if (date.substring(5, 7) === '01') {
+    return 'JAN';
+  } else if (date.substring(5, 7) === '02') {
+    return 'FEB';
+  } else if (date.substring(5, 7) === '03') {
+    return 'MAR';
+  } else if (date.substring(5, 7) === '04') {
+    return 'APR';
+  } else if (date.substring(5, 7) === '05') {
+    return 'MAY';
+  } else if (date.substring(5, 7) === '06') {
+    return 'JUNE';
+  } else if (date.substring(5, 7) === '07') {
+    return 'JULY';
+  } else if (date.substring(5, 7) === '08') {
+    return 'AUG';
+  } else if (date.substring(5, 7) === '09') {
+    return 'SEPT';
+  } else if (date.substring(5, 7) === '10') {
+    return 'OCT';
+  } else if (date.substring(5, 7) === '11') {
+    return 'NOV';
+  } else if (date.substring(5, 7) === '12') {
+    return 'DEC';
+  }
+  return null;
+}
+
+function parseDay(date) {
+  if (date.substring(8, 9) === '0') {
+    return date.substring(9, 10);
+  }
+  return date.substring(8, 10);
+}
+
+const CalendarIcon = (props) =>
+  <Icon>
+    <Month>{parseMonth(props.date)}</Month>
+    <Day>{parseDay(props.date)}</Day>
+  </Icon>;
 
 const Icon = styled.div`
   border-radius: 10px;
@@ -29,5 +69,9 @@ const Day = styled.p`
   transform: translateY(-4px);
   text-align: center;
   `;
+
+CalendarIcon.propTypes = {
+  date: PropTypes.string.isRequired,
+};
 
 export default CalendarIcon;

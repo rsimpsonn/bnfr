@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styled from 'styled-components';
-import JoinButton from './JoinButton';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 
-const cover = require('../../images/cover.jpg');
+import JoinButton from './JoinButton';
 
 export default class GroupCard extends Component {
   constructor(props) {
@@ -12,16 +13,34 @@ export default class GroupCard extends Component {
   }
 
   joinGroup() {
-    // TODO
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/groups/add-member',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
+        group_id: this.props.group.groupId,
+        is_leader: 0,
+      },
+      headers: {
+        Authorization: `Bearer ${JSON.parse(Cookies.get('token')).userToken}`,
+      },
+    }).then((data) => console.log(data));
   }
 
   render() {
     return (
       <Card>
-        <Cover src={cover} alt="cover" />
-        <Text>Publications</Text>
-        <Under>We make the yearbook and newspaper.</Under>
-        <JoinButton />
+        <Flex>
+          <Cover src={this.props.group.groupImage} alt="cover" />
+        </Flex>
+        <Text>{this.props.group.groupName}</Text>
+        <Under>{this.props.group.groupDescription}</Under>
+        <JoinButton
+          members={this.props.group.group_members}
+          private={this.props.group.isPrivate}
+          join={this.joinGroup}
+          creatorId={this.props.group.groupCreator.userId}
+        />
       </Card>
     );
   }
@@ -32,16 +51,14 @@ const Card = styled.div`
   height: 350px;
   box-shadow: 0px 5px 26px #DCDCDC;
   background: white;
-  display: flex;
-  flex-direction: column;
   margin: 25px 0px 25px 45px;
   border-radius: 15px;
   overflow: hidden;
+  position: relative;
   `;
 
 const Cover = styled.img`
-  height: auto;
-  width: 180px;
+  height: 100%;
 `;
 
 const Text = styled.p`
@@ -57,3 +74,13 @@ const Under = styled.p`
   color: #BDBDBD;
   font-weight: 300;
   `;
+
+const Flex = styled.div`
+    display: flex;
+    justify-content: center;
+    height: 68%;
+  `;
+
+GroupCard.propTypes = {
+  group: PropTypes.object.isRequired,
+};

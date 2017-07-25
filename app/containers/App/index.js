@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import Header from '../Header';
 import LoginForm from '../../components/LoginForm';
@@ -10,34 +9,36 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      loggedIn: false,
+      loggedIn: Cookies.get('token'),
+      signUp: Cookies.get('signup'),
     };
 
-    // this.setupHttpClient = this.setupHttpClient.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.toggleSignUp = this.toggleSignUp.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.signUp = this.signUp.bind(this);
+    this.signUpdate = this.signUpdate.bind(this);
   }
   static propTypes = {
     children: React.PropTypes.node,
   };
 
-  toggle() {
+  handleLogin() {
     this.setState({
-      loggedIn: true,
+      loggedIn: Cookies.get('token'),
     });
   }
 
-  toggleSignUp() {
+  signUp() {
+    Cookies.set('signup', 'true');
     this.setState({
-      signedUp: !this.state.signedUp,
+      signUp: Cookies.get('signup'),
     });
   }
 
-  handleLogin(res) {
-    Cookies.set('token', res, { SameSite: 'strict' });
+  signUpdate() {
+    Cookies.remove('signup');
     this.setState({
-      loggedIn: true,
+      signUp: Cookies.get('signup'),
+      loggedIn: Cookies.get('token'),
     });
   }
 
@@ -46,17 +47,17 @@ export default class App extends Component {
       <div>
         {this.state.loggedIn &&
           <div>
-            <Header />
+            <Header logout={this.handleLogin} />
             <div className="content">
               {this.props.children}
             </div>
           </div>}
+        {this.state.signUp && <SignUp signUp={this.signUpdate} />}
         {!this.state.loggedIn &&
-          <LoginForm
-            onLogin={this.handleLogin}
-            signUp={this.toggleSignUp}
-            login={null}
-          />}
+          !this.state.signUp &&
+          <div>
+            <LoginForm onLogin={this.handleLogin} signUp={this.signUp} />
+          </div>}
       </div>
     );
   }

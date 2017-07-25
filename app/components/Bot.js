@@ -3,15 +3,10 @@ import styled, { keyframes } from 'styled-components';
 import EmojiConverter from 'emoji-js';
 
 import convertToHex from '../convertToHex';
+import GroupEmojis from '../GroupEmojis';
 
 const emoji = new EmojiConverter();
-emoji.addAliases({
-  publications: '1f4f0',
-  robotics: '1f916',
-  mun: '1f30e',
-  sailing: '26f5',
-  struck: '1f58b',
-});
+emoji.addAliases(GroupEmojis());
 
 const B = require('../../images/bot.svg');
 
@@ -25,7 +20,9 @@ export default class Bot extends Component {
   }
 
   render() {
-    const e = emoji.replace_colons(`:${this.state.group}:`);
+    const e = emoji.replace_colons(
+      `:${this.state.group.toLowerCase().replace(' ', '')}:`
+    );
     const icon = e.type === String ? emoji.replace_colons(':fire:') : e;
     return (
       <Div>

@@ -79,7 +79,7 @@ export default class LeadersPanel extends Component {
         >
           <PopoverContent>
             <Div>
-              <EventForm />
+              <EventForm group={this.props.group} />
             </Div>
           </PopoverContent>
         </Popover>
@@ -103,7 +103,7 @@ export default class LeadersPanel extends Component {
         >
           <PopoverContent>
             <Div>
-              <GroupSettingsForm />
+              <GroupSettingsForm group={this.props.group} />
             </Div>
           </PopoverContent>
         </Popover>
@@ -114,6 +114,7 @@ export default class LeadersPanel extends Component {
 
 LeadersPanel.propTypes = {
   bot: PropTypes.func.isRequired,
+  group: PropTypes.object.isRequired,
 };
 
 const Button = styled.button`

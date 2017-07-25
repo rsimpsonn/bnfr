@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styled from 'styled-components';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import ChannelMessage from './ChannelMessage';
@@ -10,27 +12,57 @@ export default class ChannelFeed extends Component {
     super(props);
 
     this.state = {
-      messages: [
-        'Dribbble Meetups come in all sizes and varieties. A small grassroots Dribbble Meetup can help build the design community in your area. By hosting a small meetup, you can get to know other designers, talk shop, share resources, or even find a mentor or mentee. Many of our Dribbble Teams host Dribbble Meetups regularly. In addition to building community and gaining valuable face time, hosting a Dribbble Meetup at your office is a great way for local designers to learn about your company and what you do. Getting designers together in your area can also be a great way to find and hire new talent.',
-        'Yo wazzup',
-        'Hey',
-        'Hey',
-        'Hey',
-      ],
+      user: JSON.parse(Cookies.get('token')),
       message: '',
+      id: this.props.id,
     };
 
     this.addMessage = this.addMessage.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.messages = this.messages.bind(this);
+  }
+
+  componentDidMount() {
+    $.ajax({
+      url:
+        'http://52.66.73.127/bonfire/bon-lara/public/api/get-all-channel-feeds',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
+        channel_id: this.state.id,
+      },
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => this.setState({ messages: data[0].data }));
+    this.scroll.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scroll.scrollToBottom();
   }
 
   addMessage() {
-    const messagesCopy = this.state.messages;
-    messagesCopy.push(this.state.message);
-    this.setState({
-      messages: messagesCopy,
-      message: '',
-    });
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/create-new-feed',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
+        description: this.state.message,
+        group_id: this.props.groupId,
+        channel_id: this.state.id,
+      },
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => console.log(data));
+  }
+
+  messages() {
+    console.log(this.state.messages);
+    return this.state.messages.map((msg) =>
+      <ChannelMessage message={msg.description} />
+    );
   }
 
   handleChange(event) {
@@ -43,14 +75,10 @@ export default class ChannelFeed extends Component {
   }
 
   render() {
-    const feed = this.state.messages.map((msg) =>
-      <ChannelMessage message={msg} />
-    );
-
     return (
       <div>
-        <Scrollbars style={{ height: 355 }}>
-          {feed}
+        <Scrollbars style={{ height: 425 }} ref={(c) => (this.scroll = c)}>
+          {this.state.messages && this.messages()}
         </Scrollbars>
         <ChannelMessenger change={this.handleChange} submit={this.addMessage} />
       </div>
@@ -58,7 +86,7 @@ export default class ChannelFeed extends Component {
   }
 }
 
-const Div = styled.div`
-  overflow-y: scroll;
-  height: 355px;
-  `;
+ChannelFeed.propTypes = {
+  id: PropTypes.number.isRequired,
+  groupId: PropTypes.number.isRequired,
+};

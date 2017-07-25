@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import DropzoneComponent from 'react-dropzone-component';
+import Cookies from 'js-cookie';
+import $ from 'jquery';
 
 export default class GroupForm extends Component {
   constructor(props) {
@@ -8,40 +9,109 @@ export default class GroupForm extends Component {
 
     this.state = {
       accepted: undefined,
+      success: false,
+      user: JSON.parse(Cookies.get('token')),
     };
+
+    this.submit = this.submit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+  }
+
+  submit() {
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/groups/create',
+      method: 'POST',
+      dataType: 'JSON',
+      data: {
+        name: this.state.name,
+        description: this.state.description,
+        is_private: this.state.check,
+        image: this.state.file,
+      },
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => {
+      console.log(data);
+      this.setState({
+        success: true,
+      });
+    });
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox'
+      ? target.checked ? 1 : 0
+      : target.value;
+    const name = target.name;
+
+    console.log(value);
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
+  handleImageChange(event) {
+    const self = this;
+    const reader = new FileReader();
+    const file = event.target.files[0];
+
+    reader.onload = function (upload) {
+      self.setState({
+        image: upload.target.result,
+      });
+    };
+    reader.readAsDataURL(file);
+    this.setState({
+      file: reader.result,
+    });
   }
 
   render() {
-    const compConfig = {
-      iconFiletypes: ['.jpg', '.png'],
-      showFiletypeIcon: true,
-      postUrl: '/uploadHandler',
-    };
-
-    const eventHandlers = {
-      drop: (file) => this.setState({ accepted: file }),
-    };
-
     return (
-      <form>
-        <Flex>
-          <Title placeholder="Your Group's Name" />
-          <Sub placeholder="Short Description" />
-          <label htmlFor="check">
-            <SubmitText>Will your group be private?</SubmitText>
-            <Title name="check" type="checkbox" />
-          </label>
-          <DropzoneComponent
-            config={compConfig}
-            eventHandlers={eventHandlers}
-          />
-          {typeof this.state.accepted !== 'undefined' &&
-            <img src={this.state.accepted} />}
-          <Submit onClick={null}>
-            <SubmitText>Create your group</SubmitText>
-          </Submit>
-        </Flex>
-      </form>
+      <div>
+        {!this.state.success &&
+          <Flex>
+            <Title
+              placeholder="Your Group's Name"
+              name="name"
+              onChange={this.handleChange}
+            />
+            <Sub
+              placeholder="Short Description"
+              name="description"
+              onChange={this.handleChange}
+            />
+            <label htmlFor="check">
+              <SubmitText>Will your group be private?</SubmitText>
+              <Title
+                name="check"
+                type="checkbox"
+                onChange={this.handleChange}
+              />
+            </label>
+            <input
+              type="file"
+              name="file"
+              ref={(c) => (this.fileUpload = c)}
+              onChange={this.handleImageChange}
+            />
+            {this.state.image && <Cover src={this.state.image} />}
+            <Submit onClick={this.submit}>
+              <SubmitText>Create your group</SubmitText>
+            </Submit>
+          </Flex>}
+        {this.state.success &&
+          <Flex>
+            <SuccessText>
+              Your group has been created succesfully and will join Bonfire upon
+              approval.
+            </SuccessText>
+          </Flex>}
+      </div>
     );
   }
 }
@@ -106,18 +176,18 @@ const SubmitText = styled.p`
           font-weight: 300;
           `;
 
-const fileLabel = styled.label`
+const SuccessText = styled.p`
+  font-size: 32px;
   font-weight: 300;
-  color: white;
-  background-color: black;
-  display: inline-block;
-  `;
+  color: #fff;
+  text-align: center;
+  margin: 150px 100px;
+`;
 
-const file = styled.input`
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1;
-  `;
+const Cover = styled.img`
+  height: auto;
+  width: ${376 / 2}px;
+  border: solid 5px #fff;
+  border-radius: 8px;
+  margin: 20px 0;
+`;

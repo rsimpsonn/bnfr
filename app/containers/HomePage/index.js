@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Typing from 'react-typing-animation';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 
 import Hero from '../../components/Hero';
 import GroupCard from '../../components/GroupCard';
@@ -14,16 +16,51 @@ export default class HomePage extends Component {
 
     this.state = {
       popoverOpen: false,
-      // users groups
+      user: JSON.parse(Cookies.get('token')),
     };
 
     this.toggle = this.toggle.bind(this);
+    this.groupcards = this.groupcards.bind(this);
+  }
+
+  componentDidMount() {
+    console.log(this.state.user.userToken);
+    $.ajax({
+      url: 'http://52.66.73.127/bonfire/bon-lara/public/api/groups',
+      method: 'GET',
+      dataType: 'JSON',
+      headers: {
+        Authorization: `Bearer ${this.state.user.userToken}`,
+      },
+    }).then((data) => {
+      this.setState({
+        groups: data[0],
+      });
+    });
   }
 
   toggle() {
     this.setState({
       popoverOpen: !this.state.popoverOpen,
     });
+  }
+
+  groupcards() {
+    return this.state.groups.data
+      .slice(0, 5)
+      .map((singleGroup) => <GroupCard group={singleGroup} />);
+  }
+
+  foryou() {
+    return this.state.groups.data
+      .slice(5, 10)
+      .map((singleGroup) => <GroupCard group={singleGroup} />);
+  }
+
+  allgroups() {
+    return this.state.groups.data.map((singleGroup) =>
+      <GroupCard group={singleGroup} />
+    );
   }
 
   render() {
@@ -33,7 +70,13 @@ export default class HomePage extends Component {
           <Rockets src={Space} alt="rockets" />
           <div>
             <HeadingFormat>
-              <Title>Hey Charlotte</Title>
+              <Title>
+                Hey{' '}
+                {this.state.user.name.substring(
+                  0,
+                  this.state.user.name.indexOf(' ')
+                )}
+              </Title>
               <Line />
               <Typing cursor={null} speed={25}>
                 <Messages>Here are your messages.</Messages>
@@ -51,16 +94,15 @@ export default class HomePage extends Component {
           <a href="/start"><Start> Start a group</Start></a>
         </Groups>
         <Flex>
-          <GroupCard />
-          <GroupCard />
-          <GroupCard />
-          <GroupCard />
+          {this.state.groups && this.groupcards()}
         </Flex>
         <Groups>For You</Groups>
         <Flex>
-          <GroupCard />
-          <GroupCard />
-          <GroupCard />
+          {this.state.groups && this.foryou()}
+        </Flex>
+        <Groups>All Groups</Groups>
+        <Flex>
+          {this.state.groups && this.allgroups()}
         </Flex>
       </div>
     );
@@ -89,6 +131,12 @@ const Flex = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+`;
+
+const Cards = styled.div`
+  overflow-x: scroll;
+  flex-direction: row;
+  display: flex;
 `;
 
 const Groups = styled.h2`

@@ -1,25 +1,25 @@
 import React, { PropTypes } from 'react';
 import styled from 'styled-components';
 
-const Fire = require('../../images/fire.svg');
+const Prof = require('../../images/profile.jpg');
 
 const Announcement = (props) =>
   <Banner>
-    <Profile src={Fire} alt="profile" />
+    <Profile src={Prof} alt="profile" />
     <Message>{props.message}</Message>
   </Banner>;
 
 const Profile = styled.img`
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  border-radius: 18px;
+  width: 50px;
+  height: 50px;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 20px;
   background: #fff;
-  flex: 0 0 60px;
+  flex: 0 0 50px;
   `;
 
 const Message = styled.p`
@@ -36,7 +36,7 @@ const Banner = styled.div`
   `;
 
 Announcement.defaultTypes = {
-  src: Fire,
+  src: Prof,
 };
 
 Announcement.propTypes = {
